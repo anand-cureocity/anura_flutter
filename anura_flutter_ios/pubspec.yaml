@@ -1,0 +1,27 @@
+name: anura_flutter_ios
+description: iOS implementation of the anura_flutter plugin
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+
+flutter:
+  plugin:
+    implements: anura_flutter
+    platforms:
+      ios:
+        pluginClass: AnuraFlutterPlugin
+        dartPluginClass: AnuraFlutterIOS
+
+dependencies:
+  flutter:
+    sdk: flutter
+  anura_flutter_platform_interface:
+    path: ../anura_flutter_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.8
+  very_good_analysis: ^6.0.0

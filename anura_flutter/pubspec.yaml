@@ -1,0 +1,32 @@
+name: anura_flutter
+description: A Very Good Project created by Very Good CLI.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: anura_flutter_android
+      ios:
+        default_package: anura_flutter_ios
+
+dependencies:
+  flutter:
+    sdk: flutter
+  anura_flutter_android:
+    path: ../anura_flutter_android
+  anura_flutter_ios:
+    path: ../anura_flutter_ios
+  anura_flutter_platform_interface:
+    path: ../anura_flutter_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  plugin_platform_interface: ^2.1.8
+  very_good_analysis: ^6.0.0
