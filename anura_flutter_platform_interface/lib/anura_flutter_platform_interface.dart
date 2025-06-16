@@ -7,7 +7,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 /// rather than implement it as `AnuraFlutter`.
 /// Extending this class (using `extends`) ensures that the subclass will get
 /// the default implementation, while platform implementations that `implements`
-///  this interface will be broken by newly added [AnuraFlutterPlatform] methods.
+///  this interface will be broken by newly added [AnuraFlutterPlatform] methods
 abstract class AnuraFlutterPlatform extends PlatformInterface {
   /// Constructs a AnuraFlutterPlatform.
   AnuraFlutterPlatform() : super(token: _token);

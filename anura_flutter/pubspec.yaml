@@ -15,14 +15,14 @@ flutter:
         default_package: anura_flutter_ios
 
 dependencies:
-  flutter:
-    sdk: flutter
   anura_flutter_android:
     path: ../anura_flutter_android
   anura_flutter_ios:
     path: ../anura_flutter_ios
   anura_flutter_platform_interface:
     path: ../anura_flutter_platform_interface
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
