@@ -1,0 +1,8 @@
+# melos_managed_dependency_overrides: anura_flutter_android,anura_flutter_ios,anura_flutter_platform_interface
+dependency_overrides:
+  anura_flutter_android:
+    path: ../anura_flutter_android
+  anura_flutter_ios:
+    path: ../anura_flutter_ios
+  anura_flutter_platform_interface:
+    path: ../anura_flutter_platform_interface
