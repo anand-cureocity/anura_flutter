@@ -14,7 +14,7 @@ class AnuraFlutterAndroid extends AnuraFlutterPlatform {
   }
 
   @override
-  Future<String?> getPlatformName() {
-    return methodChannel.invokeMethod<String>('getPlatformName');
+  Future<void> launchAnuraScanner() {
+    return methodChannel.invokeMethod('launchAnuraScanner');
   }
 }
