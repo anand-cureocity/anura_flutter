@@ -29,5 +29,5 @@ abstract class AnuraFlutterPlatform extends PlatformInterface {
   }
 
   /// Return the current platform name.
-  Future<void> launchAnuraScanner(Map<String, dynamic> user);
+  Future<Map<String,dynamic>?> launchAnuraScanner(Map<String, dynamic> user);
 }

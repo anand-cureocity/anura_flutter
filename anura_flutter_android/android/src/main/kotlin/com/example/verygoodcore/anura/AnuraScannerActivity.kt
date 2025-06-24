@@ -52,7 +52,7 @@ import kotlin.math.max
 import androidx.activity.viewModels
 import com.example.verygoodcore.databinding.AnuraScannerBinding
 import kotlin.system.exitProcess
-
+import android.app.Activity
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.result.contract.ActivityResultContracts
@@ -186,7 +186,9 @@ class AnuraScannerActivity :  AppCompatActivity(),
     * the intent
     */
    Log.d(TAG, "results=${results.toJsonGson()}")
-  //    result.success(results.toJsonGson())
+      val resultIntent = Intent()
+      resultIntent.putExtra("anura_result", results.toJsonGson())
+      setResult(Activity.RESULT_OK, resultIntent)
       finish()
   }
 

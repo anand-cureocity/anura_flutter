@@ -9,7 +9,7 @@ class MethodChannelAnuraFlutter extends AnuraFlutterPlatform {
   final methodChannel = const MethodChannel('anura_flutter');
 
   @override
-  Future<void> launchAnuraScanner(Map<String,dynamic>  user) {
-    return methodChannel.invokeMethod('launchAnuraScanner',user);
+  Future<Map<String,dynamic>?> launchAnuraScanner(Map<String,dynamic>  user) {
+    return methodChannel.invokeMethod<Map<String,dynamic>?>('launchAnuraScanner',user);
   }
 }

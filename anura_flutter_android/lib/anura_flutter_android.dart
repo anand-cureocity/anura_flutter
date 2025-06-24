@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:anura_flutter_platform_interface/anura_flutter_platform_interface.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +16,15 @@ class AnuraFlutterAndroid extends AnuraFlutterPlatform {
   }
 
   @override
-  Future<void> launchAnuraScanner(Map<String,dynamic> user) {
-    return methodChannel.invokeMethod('launchAnuraScanner',user);
+  Future<Map<String, dynamic>?> launchAnuraScanner(
+      Map<String, dynamic> user) async {
+    final temp = await methodChannel.invokeMethod<String?>(
+      'launchAnuraScanner',
+      user,
+    );
+    if (temp == null) {
+      throw TypeError();
+    }
+    return json.decode(temp) as Map<String, dynamic>;
   }
 }

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:anura_flutter/anura_flutter.dart';
+import 'package:anura_flutter/models/anura_scanned_data.dart';
 import 'package:anura_flutter/models/anura_user_model.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String? _platformName;
+  AnuraScannedData? scannedData;
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +34,12 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (_platformName == null)
-              const SizedBox.shrink()
-            else
-              Text(
-                'Platform Name: $_platformName',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
                 if (!context.mounted) return;
                 try {
-                  await launchAnuraScanner(
+                  scannedData = await launchAnuraScanner(
                     AnuraUserModel(
                       sex: AnuraUserModelSex.male,
                       height: 173,
@@ -51,8 +47,11 @@ class _HomePageState extends State<HomePage> {
                       weight: 98,
                     ),
                   );
+
+                  log("got result");
                   // setState(() => _platformName = result);
-                } catch (error) {
+                } catch (error, stack) {
+                  log("error", stackTrace: stack, error: error);
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -63,6 +62,12 @@ class _HomePageState extends State<HomePage> {
                 }
               },
               child: const Text('Get Platform Name'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                log(scannedData.toString());
+              },
+              child: Text("print data"),
             ),
           ],
         ),

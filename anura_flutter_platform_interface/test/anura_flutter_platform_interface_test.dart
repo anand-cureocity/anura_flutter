@@ -2,10 +2,12 @@ import 'package:anura_flutter_platform_interface/anura_flutter_platform_interfac
 import 'package:flutter_test/flutter_test.dart';
 
 class AnuraFlutterMock extends AnuraFlutterPlatform {
-  static const mockPlatformName = 'Mock';
+  static const mockPlatformName = <String, dynamic>{};
 
   @override
-  Future<void> launchAnuraScanner(Map<String,dynamic> user) async =>
+  Future<Map<String, dynamic>> launchAnuraScanner(
+    Map<String, dynamic> user,
+  ) async =>
       mockPlatformName;
 }
 
