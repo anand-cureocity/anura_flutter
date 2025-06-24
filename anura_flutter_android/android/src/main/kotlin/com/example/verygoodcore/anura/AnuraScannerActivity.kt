@@ -33,7 +33,7 @@ import ai.nuralogix.anurasdk.views.utils.MeasurementUIConfiguration
 import ai.nuralogix.dfx.ChunkPayload
 import ai.nuralogix.dfx.ConstraintResult
 import ai.nuralogix.dfx.ConstraintResult.ConstraintReason
-//import android.content.Intent
+import android.content.Intent
 import android.content.res.Resources
 import android.opengl.GLSurfaceView.Renderer
 //import android.os.Bundle
@@ -62,6 +62,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import android.os.Bundle
+import com.google.gson.Gson
+
 
 
 class AnuraScannerActivity :  AppCompatActivity(),
@@ -183,10 +185,9 @@ class AnuraScannerActivity :  AppCompatActivity(),
     * Display MeasurementResults in a new [ExampleResultsActivity] by sending it as extras in
     * the intent
     */
-   Log.d(TAG, "results=$results")
-//   val intent = Intent(this, ExampleResultsActivity::class.java)
-//   intent.putExtra(KEY_MEASUREMENT_RESULTS, results)
-//   startActivity(intent)
+   Log.d(TAG, "results=${results.toJsonGson()}")
+  //    result.success(results.toJsonGson())
+      finish()
   }
 
   /**
@@ -1259,3 +1260,9 @@ Log.d(TAG, "status=$status")
   }
   //endregion
  }
+
+
+
+fun MeasurementResults.toJsonGson(): String {
+    return Gson().toJson(this)
+}
