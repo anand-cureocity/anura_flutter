@@ -18,7 +18,7 @@ class AnuraUserModel {
   final int age;
 
   /// Weight in KG
-  final double weight;
+  final int weight;
 
   /// To create json from [AnuraUserModel]
   Map<String, dynamic> toJson() => {

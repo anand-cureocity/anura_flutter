@@ -203,10 +203,10 @@ class AnuraScannerActivity :  AppCompatActivity(),
    }
 
       var userData = getIntent().getExtras()
-      val sex = userData?.getString("sex")
-      val height = userData?.getInt("height")
-      val weight = userData?.getDouble("weight")
-      val age = userData?.getInt("age")
+      val sex = userData!!.getString("sex")
+      val height = userData!!.getInt("height")
+      val weight = userData!!.getInt("weight")
+      val age = userData!!.getInt("age")
 
    var measurementQuestionnaire = MeasurementQuestionnaire().apply {
     setSexAssignedAtBirth(sex.toString())
