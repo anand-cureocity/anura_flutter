@@ -14,7 +14,7 @@ class AnuraFlutterIOS extends AnuraFlutterPlatform {
   }
 
   @override
-  Future<String?> launchAnuraScanner() {
-    return methodChannel.invokeMethod<String>('launchAnuraScanner');
+  Future<String?> launchAnuraScanner(Map<String,dynamic> user) {
+    return methodChannel.invokeMethod<String>('launchAnuraScanner',user);
   }
 }

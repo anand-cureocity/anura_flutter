@@ -33,10 +33,10 @@ import ai.nuralogix.anurasdk.views.utils.MeasurementUIConfiguration
 import ai.nuralogix.dfx.ChunkPayload
 import ai.nuralogix.dfx.ConstraintResult
 import ai.nuralogix.dfx.ConstraintResult.ConstraintReason
-import android.content.Intent
+//import android.content.Intent
 import android.content.res.Resources
 import android.opengl.GLSurfaceView.Renderer
-import android.os.Bundle
+//import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.view.WindowManager
@@ -61,6 +61,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
+import android.os.Bundle
 
 
 class AnuraScannerActivity :  AppCompatActivity(),
@@ -69,7 +70,6 @@ class AnuraScannerActivity :  AppCompatActivity(),
 
   companion object {
    const val TAG = "AnuraMeasurementActivity"
-
    /**
     * Generally, the front-facing camera sensor is rotated, and so the width and height are
     * reversed. You may adjust IMAGE_WIDTH and IMAGE_HEIGHT to suit your application and
@@ -84,6 +84,7 @@ class AnuraScannerActivity :  AppCompatActivity(),
     */
    var MEASUREMENT_DURATION = 30.0
    var TOTAL_NUMBER_CHUNKS = 6
+
   }
 
   /**
@@ -196,16 +197,24 @@ class AnuraScannerActivity :  AppCompatActivity(),
    * Reference: https://dfxapiversion10.docs.apiary.io/#reference/0/measurements/create
    */
   private fun startMeasurement() {
+
    if (!this::core.isInitialized) {
     return
    }
 
+      var userData = getIntent().getExtras()
+      val sex = userData?.getString("sex")
+      val height = userData?.getInt("height")
+      val weight = userData?.getDouble("weight")
+      val age = userData?.getInt("age")
+
    var measurementQuestionnaire = MeasurementQuestionnaire().apply {
-    setSexAssignedAtBirth("male")
-    setAge(23)
-    setHeightInCm(175)
-    setWeightInKg(60)
+    setSexAssignedAtBirth(sex.toString())
+    setAge(age)
+    setHeightInCm(height)
+    setWeightInKg(weight)
    }
+
 
    val status = measurementPipeline.startMeasurement(
     measurementQuestionnaire,

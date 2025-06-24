@@ -5,7 +5,8 @@ class AnuraFlutterMock extends AnuraFlutterPlatform {
   static const mockPlatformName = 'Mock';
 
   @override
-  Future<void> launchAnuraScanner() async => mockPlatformName;
+  Future<void> launchAnuraScanner(Map<String,dynamic> user) async =>
+      mockPlatformName;
 }
 
 void main() {

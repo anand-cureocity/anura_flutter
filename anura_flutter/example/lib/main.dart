@@ -1,4 +1,5 @@
 import 'package:anura_flutter/anura_flutter.dart';
+import 'package:anura_flutter/models/anura_user_model.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -42,7 +43,14 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 if (!context.mounted) return;
                 try {
-                  await launchAnuraScanner();
+                  await launchAnuraScanner(
+                    AnuraUserModel(
+                      sex: AnuraUserModelSex.male,
+                      height: 173,
+                      age: 28,
+                      weight: 98,
+                    ),
+                  );
                   // setState(() => _platformName = result);
                 } catch (error) {
                   if (!context.mounted) return;
