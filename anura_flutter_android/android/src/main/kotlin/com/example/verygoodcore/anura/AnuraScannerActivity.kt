@@ -23,6 +23,7 @@ import ai.nuralogix.anurasdk.error.AnuraError
 import ai.nuralogix.anurasdk.face.FaceTrackerAdapter
 import ai.nuralogix.anurasdk.face.MediaPipeFaceTracker
 import ai.nuralogix.anurasdk.render.Render
+import ai.nuralogix.anurasdk.utils.AnuLogUtil
 import ai.nuralogix.anurasdk.utils.Countdown
 import ai.nuralogix.anurasdk.utils.DCResult
 import ai.nuralogix.anurasdk.utils.DefaultCountdown
@@ -44,9 +45,22 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
+import com.example.verygoodcore.anura.viewmodel.ExampleStartViewModel
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.math.max
+import androidx.activity.viewModels
+import com.example.verygoodcore.databinding.AnuraScannerBinding
+import kotlin.system.exitProcess
+
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 
 
 class AnuraScannerActivity :  AppCompatActivity(),
@@ -144,6 +158,12 @@ class AnuraScannerActivity :  AppCompatActivity(),
    * This is used to keep track of network state and inform users when the network is unavailable
    */
   private var isNetworkAvailable = true
+
+ private val binding by lazy { AnuraScannerBinding.inflate(layoutInflater) }
+
+ private val exampleStartViewModel: ExampleStartViewModel
+         by viewModels { ExampleStartViewModel.Factory }
+
   //region Common Methods
   /**
    * This method will get called when measurement is complete DeepAffex Cloud has finished
@@ -192,7 +212,7 @@ class AnuraScannerActivity :  AppCompatActivity(),
     BuildConfig.DFX_STUDY_ID,
     "Guest"
    )
-
+Log.d(TAG, "status=$status")
    if (status == AnuraError.Core.OK) {
     setupMeasurementViewForStartMeasurement()
    }
@@ -1109,6 +1129,29 @@ class AnuraScannerActivity :  AppCompatActivity(),
     */
    supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
    setContentView(R.layout.anura_scanner)
+   initialize()
+
+   if (checkEmbeddedDeepAffexLicenseAndStudyID()) {
+    requestCameraAccessPermission()
+    lifecycleScope.launch {
+     /**
+      * Before launching [AnuraExampleMeasurementActivity], we need to ensure that the
+      * application has a valid DeepAffex Cloud access token. The application also needs
+      * to ensure it has the latest study configuration binary that's required to
+      * initialize DeepAffex Extraction Library
+      */
+     exampleStartViewModel.verifyDeepAffexTokenAndStudyFile()
+    }
+   } else {
+    /**
+     * If either the DeepAffex License Key or Study ID are not configured, show an error
+     * dialog box and exit the app
+     */
+    showExitAppDialog(
+     "Sample App Configuration Error",
+     "Your DFX_LICENSE_KEY and DFX_STUDY_ID are not set in server.properties"
+    )
+   }
 
    /**
     * Initialize and setup Anura Core SDK and associated views
@@ -1118,7 +1161,59 @@ class AnuraScannerActivity :  AppCompatActivity(),
    setupCustomViews()
   }
 
-  override fun onResume() {
+ private fun showExitAppDialog(title: String, msg: String) {
+  MaterialAlertDialogBuilder(this)
+   .setTitle(title)
+   .setMessage(msg)
+   .setNegativeButton("Exit")
+   { _, _ -> exitProcess(0) }
+   .setCancelable(false)
+   .show()
+ }
+
+ private fun checkEmbeddedDeepAffexLicenseAndStudyID(): Boolean {
+  return !(BuildConfig.DFX_LICENSE_KEY.isEmpty() || BuildConfig.DFX_STUDY_ID.isEmpty())
+ }
+
+ private fun requestCameraAccessPermission() {
+  if (ContextCompat.checkSelfPermission(
+    this,
+    Manifest.permission.CAMERA
+   ) == PackageManager.PERMISSION_GRANTED
+  ) {
+   // Permission already granted
+   return
+  }
+  registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+   runOnUiThread {
+    Toast.makeText(
+     this@AnuraScannerActivity,
+     "Camera Permission ${if (it) "Granted" else "Denied"}!",
+     Toast.LENGTH_SHORT
+    ).show()
+   }
+  }.run { launch(Manifest.permission.CAMERA) }
+ }
+
+ private fun initialize() {
+//  setContentView(binding.root)
+  SharedPreferencesHelper.initialize(application)
+  AnuLogUtil.setShowLog(BuildConfig.DEBUG)
+
+  exampleStartViewModel.readyToMeasure.observe(this) { handleTokenVerified(it) }
+  exampleStartViewModel.error.observe(this) { handleError(it) }
+ }
+
+ private fun handleTokenVerified(isTokenVerified: Boolean) {
+//  binding.goMeasuremntBtn.isEnabled = isTokenVerified
+ }
+
+ private fun handleError(errorMsg: String?) {
+  Toast.makeText(this, "Error:$errorMsg", Toast.LENGTH_SHORT).show()
+ }
+
+
+ override fun onResume() {
    super.onResume()
    if (this::core.isInitialized) {
     measurementPipeline.setListener(this)
