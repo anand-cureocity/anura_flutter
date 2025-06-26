@@ -16,26 +16,59 @@ import Foundation
 
 struct AnuraUser {
     
-    enum Gender : String {
-        case female
-        case male
-        case unknown
-    }
-    
-    var partnerID : String?  // Optional string up to 48 characters long
-    var height : Int         // cm
-    var weight : Int         // kg
-    var age    : Int         // years
-    var gender : Gender      // male/female
-    
-    static var empty : Self {
-        return AnuraUser(partnerID: nil,
-                         height: -1,
-                         weight: -1,
-                         age: -1,
-                         gender: .unknown)
-    }
-    
+    enum Gender: String {
+           case female
+           case male
+           case unknown
+           
+           // Proper string initialization
+           init(from string: String?) {
+               guard let string = string?.lowercased() else {
+                   self = .unknown
+                   return
+               }
+               self = Gender(rawValue: string) ?? .unknown
+           }
+       }
+       
+       var partnerID: String?
+       var height: Int
+       var weight: Int
+       var age: Int
+       var gender: Gender
+       
+       // MARK: - Initializers
+       
+       // Custom initializer from dictionary
+       init?(from dictionary: [String: Any]?) {
+           guard let dict = dictionary else { return nil }
+           
+           self.age = dict["age"] as? Int ?? -1
+           self.height = dict["height"] as? Int ?? -1
+           self.weight = dict["weight"] as? Int ?? -1
+           self.gender = Gender(from: dict["sex"] as? String)
+           self.partnerID = dict["partnerID"] as? String
+       }
+       
+       // Explicit memberwise initializer
+       init(partnerID: String?, height: Int, weight: Int, age: Int, gender: Gender) {
+           self.partnerID = partnerID
+           self.height = height
+           self.weight = weight
+           self.age = age
+           self.gender = gender
+       }
+       
+       // Empty static instance
+       static var empty: AnuraUser {
+           return AnuraUser(
+               partnerID: nil,
+               height: -1,
+               weight: -1,
+               age: -1,
+               gender: .unknown
+           )
+       }
     var isValid : Bool {
         return hasValidAge && hasValidHeightAndWeight && hasKnownGender
     }
@@ -70,4 +103,6 @@ struct AnuraUser {
     var hasKnownGender : Bool {
         return gender != .unknown
     }
+    
+
 }

@@ -169,8 +169,19 @@ public class AnuraFlutterPlugin: NSObject, FlutterPlugin {
     }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-//    result("iOS")
-      user = AnuraUser(height: 178, weight: 70, age: 25, gender: .male);
-      startAnuraMeasurement()
+      if(call.method == "launchAnuraScanner"){
+          do {
+              user = AnuraUser.init(from: call.arguments as! [String : Any])
+              startAnuraMeasurement()
+          } catch let err {
+              // Throw error to Flutter
+              result(FlutterError.init(code: "ERROR",
+                                       message: err.localizedDescription ,
+                                                          details: nil))
+            
+          }
+      }
+      else { result(FlutterMethodNotImplemented)
+      }
   }
 }

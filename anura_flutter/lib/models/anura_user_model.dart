@@ -6,6 +6,7 @@ class AnuraUserModel {
     required this.height,
     required this.age,
     required this.weight,
+    required this.partnerID,
   });
 
   /// To get user sex assigned at birth
@@ -20,12 +21,16 @@ class AnuraUserModel {
   /// Weight in KG
   final int weight;
 
+  /// Weight in KG
+  final String partnerID;
+
   /// To create json from [AnuraUserModel]
   Map<String, dynamic> toJson() => {
         'sex': sex.name,
         'height': height,
         'weight': weight,
         'age': age,
+        'partnerID': partnerID,
       };
 }
 

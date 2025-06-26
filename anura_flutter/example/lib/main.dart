@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
                 try {
                   scannedData = await launchAnuraScanner(
                     AnuraUserModel(
+                      partnerID: 'guest',
                       sex: AnuraUserModelSex.male,
                       height: 173,
                       age: 28,
@@ -48,10 +49,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
 
-                  log("got result");
+                  log('got result');
                   // setState(() => _platformName = result);
                 } catch (error, stack) {
-                  log("error", stackTrace: stack, error: error);
+                  log('error', stackTrace: stack, error: error);
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -67,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 log(scannedData.toString());
               },
-              child: Text("print data"),
+              child: Text('print data'),
             ),
           ],
         ),
