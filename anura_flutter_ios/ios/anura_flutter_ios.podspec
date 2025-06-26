@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
   s.resource_bundles = {
      'AnuraFlutter' => [
          'ios/Resources/**/*.strings',
-         'ios/Assets/**/*.{xcassets,ttf,otf}'
+         'ios/Resources/Info.plist'
      ]
    }
   
