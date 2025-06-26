@@ -25,7 +25,6 @@ class MeasurementDelegate : AnuraMeasurementDelegate {
     var measurementResultsSubscriber : MeasurementResultsSubscriber!
     
     weak var measurementController : AnuraMeasurementViewController?
-    weak var resultsController : ExampleResultsViewController?
     
     var measurementID : String = ""
     var measurementQueue : OperationQueue?
@@ -110,23 +109,24 @@ class MeasurementDelegate : AnuraMeasurementDelegate {
     // Called when the measurement is complete
     func anuraMeasurementControllerDidFinishMeasuring(_ controller: AnuraMeasurementViewController) {
         print("***** anuraMeasurementControllerDidFinishMeasuring")
-        
+        GlobalLoader.show(message: "Processing results...")
         // Blood Flow Extraction is complete - Present results view controller
         
-        let resultsController = ExampleResultsViewController()
-        resultsController.dismissBlock = resetMeasurementID
-        let navigationController = UINavigationController(rootViewController: resultsController)
-        navigationController.modalPresentationStyle = .fullScreen
-        
-        controller.present(navigationController, animated: true) { }
-    
-        // Keep a weak reference to results view controller so we can update it
-        // when we receive results for the final chunk from DeepAffex API
-        
-        self.resultsController = resultsController
+//        let resultsController = ExampleResultsViewController()
+//        resultsController.dismissBlock = resetMeasurementID
+//        let navigationController = UINavigationController(rootViewController: resultsController)
+//        navigationController.modalPresentationStyle = .fullScreen
+//        
+//        controller.present(navigationController, animated: true) { }
+//    
+//        // Keep a weak reference to results view controller so we can update it
+//        // when we receive results for the final chunk from DeepAffex API
+//        
+//        self.resultsController = resultsController
         
         DispatchQueue.main.async { [weak self] in
             self?.timeoutTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: false, block: { _ in
+                GlobalLoader.hide()
                 controller.cancelMeasurement(reason: .network)
             })
         }
@@ -166,6 +166,7 @@ class MeasurementDelegate : AnuraMeasurementDelegate {
                     // Continue operations on measurement queue
                     self.measurementQueue?.isSuspended = false
                     print("Added data to measurement (Chunk \(payload.chunkOrder + 1)) and received MeasurementDataID: \(id.id)")
+                    
                 case .failure(let error):
                     controller.cancelMeasurement(reason: .unknown)
                     print("Could not add data to measurement: \(error.localizedDescription)")
@@ -182,8 +183,8 @@ class MeasurementDelegate : AnuraMeasurementDelegate {
     // Called when a measurement is canclled due to a constraint failure. Check the `status` variable for information about the failure.
     func anuraMeasurementControllerDidCancelMeasurement(_ controller: AnuraMeasurementViewController, status: FaceConstraintsStatus) {
         print("***** anuraMeasurementControllerDidCancelMeasurement: \(status.identifier)")
-        
-        resultsController?.measurementDidCancel()
+        GlobalLoader.hide()
+//        resultsController?.measurementDidCancel()
         
         // Cancel current measurement
         resetMeasurementID()
@@ -230,13 +231,21 @@ extension MeasurementDelegate : MeasurementResultsSubscriberDelegate {
         
         // Check if results are for the last chunk, and update the results view controller
         if results.chunkOrder == controller.measurementConfiguration.numChunks - 1 {
-            resultsController?.measurementID = results.measurementID
-            resultsController?.results = results.allResults
+            GlobalLoader.hide()
+//            resultsController?.measurementID = results.measurementID
+//            resultsController?.results = results.allResults
+            if let topVC = UIApplication.topViewController() {
+                topVC.dismiss(animated: true, completion: {
+                    // Completion handler if needed
+                })
+            }
+            print(results)
             resetMeasurementID()
         }
     }
     
     func didGetError(_ subscriber: MeasurementResultsSubscriber, error: Error?) {
+        GlobalLoader.hide()
         return
     }
     
@@ -287,5 +296,23 @@ extension MeasurementDelegate {
         measurementQueue?.cancelAllOperations()
         measurementResultsSubscriber.cancelResultsSubscription()
         timeoutTimer?.invalidate()
+    }
+}
+
+
+extension UIApplication {
+    class func topViewController(controller: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+        if let navigationController = controller as? UINavigationController {
+            return topViewController(controller: navigationController.visibleViewController)
+        }
+        if let tabController = controller as? UITabBarController {
+            if let selected = tabController.selectedViewController {
+                return topViewController(controller: selected)
+            }
+        }
+        if let presented = controller?.presentedViewController {
+            return topViewController(controller: presented)
+        }
+        return controller
     }
 }

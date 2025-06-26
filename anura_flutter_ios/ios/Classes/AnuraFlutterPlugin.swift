@@ -171,7 +171,24 @@ public class AnuraFlutterPlugin: NSObject, FlutterPlugin {
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
       if(call.method == "launchAnuraScanner"){
           do {
-              user = AnuraUser.init(from: call.arguments as! [String : Any])
+              // 1. Safely cast arguments
+                  guard let arguments = call.arguments as? [String: Any] else {
+                      result(FlutterError(code: "INVALID_ARGUMENTS",
+                                        message: "Arguments must be a dictionary",
+                                        details: nil))
+                      return
+                  }
+                  
+                  // 2. Initialize user with proper error handling
+                  guard let user = AnuraUser(from: arguments) else {
+                      result(FlutterError(code: "INVALID_USER_DATA",
+                                        message: "Failed to create user from provided data",
+                                        details: nil))
+                      return
+                  }
+                  
+                  // 3. Store the user and start measurement
+                  self.user = user
               startAnuraMeasurement()
           } catch let err {
               // Throw error to Flutter

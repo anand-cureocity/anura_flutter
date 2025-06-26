@@ -24,6 +24,13 @@ Pod::Spec.new do |s|
     'Frameworks/libdfx.xcframework'
   ]
   
+  s.resource_bundles = {
+     'AnuraFlutter' => [
+         'ios/Resources/**/*.strings',
+         'ios/Assets/**/*.{xcassets,ttf,otf}'
+     ]
+   }
+  
   s.user_target_xcconfig = {
     'SWIFT_OBJC_BRIDGING_HEADER' => '${PODS_ROOT}/../.symlinks/plugins/anura_flutter_ios/ios/Classes/anura_flutter_ios-Bridging-Header.h'
   }
