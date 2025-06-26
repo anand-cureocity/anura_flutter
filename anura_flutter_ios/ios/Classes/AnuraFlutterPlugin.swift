@@ -169,6 +169,7 @@ public class AnuraFlutterPlugin: NSObject, FlutterPlugin {
     }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+      measurementDelegate.setFlutterResult(result)
       if(call.method == "launchAnuraScanner"){
           do {
               // 1. Safely cast arguments

@@ -13,6 +13,7 @@
 //
 
 import AnuraCore
+import Flutter
 
 // MeasurementDelegate implements the AnuraMeasurementDelegate protocol methods
 // to respond to various events from Anura. It communitcates with DeepAffex API
@@ -25,6 +26,7 @@ class MeasurementDelegate : AnuraMeasurementDelegate {
     var measurementResultsSubscriber : MeasurementResultsSubscriber!
     
     weak var measurementController : AnuraMeasurementViewController?
+    private var flutterResult: FlutterResult?
     
     var measurementID : String = ""
     var measurementQueue : OperationQueue?
@@ -52,6 +54,10 @@ class MeasurementDelegate : AnuraMeasurementDelegate {
         //
         // controller.enableConstraint("checkBackLight")
         // controller.setConstraint(key: "maxMovement_mm", value: "6")
+    }
+    
+    func setFlutterResult(_ result: @escaping FlutterResult) {
+        self.flutterResult = result
     }
     
     // Called when the measurement controller appears on the screen
@@ -232,7 +238,15 @@ extension MeasurementDelegate : MeasurementResultsSubscriberDelegate {
         // Check if results are for the last chunk, and update the results view controller
         if results.chunkOrder == controller.measurementConfiguration.numChunks - 1 {
             GlobalLoader.hide()
-//            resultsController?.measurementID = results.measurementID
+            do {
+                       let jsonData = try JSONSerialization.jsonObject(with: data, options: [])
+                print(jsonData)
+                       flutterResult?(jsonData)
+                   } catch {
+                       flutterResult?(FlutterError(code: "RESULT_PARSING_ERROR",
+                                                 message: "Failed to parse results",
+                                                 details: nil))
+                   }//            resultsController?.measurementID = results.measurementID
 //            resultsController?.results = results.allResults
             if let topVC = UIApplication.topViewController() {
                 topVC.dismiss(animated: true, completion: {
