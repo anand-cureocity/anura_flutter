@@ -117,7 +117,8 @@ class ChannelData {
 
   factory ChannelData.fromJson(Map<String, dynamic> json) {
     // Handle different data field names
-    final dataList = json['dataList'] ?? json['Data'] ?? <dynamic>[];
+    final dataList =
+        json['dataList'] ?? json['Data'] ?? json["data"] ?? <dynamic>[];
     final notes = json['notes'] ?? json['Notes'];
     final channel = json['Channel'];
 
