@@ -3,10 +3,11 @@ import UIKit
 import class AVFoundation.AVCaptureDevice
 import AnuraCore
 
-public class AnuraFlutterPlugin: NSObject, FlutterPlugin {
+public class AnuraFlutterPlugin: NSObject, FlutterPlugin,UIAdaptivePresentationControllerDelegate {
     var api : DeepAffexMiniAPIClient!
     var measurementDelegate : MeasurementDelegate!
     var user : AnuraUser = .empty
+    var flutterResult: FlutterResult?
     
     
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -104,6 +105,8 @@ public class AnuraFlutterPlugin: NSObject, FlutterPlugin {
 //            self.startMeasurementButton.isEnabled = true
 //        }
         
+        viewController.presentationController?.delegate = self
+        
         if let rootVC = UIApplication.shared.keyWindow?.rootViewController {
             rootVC.present(viewController, animated: true) {
 //                result(nil) // Success
@@ -167,9 +170,18 @@ public class AnuraFlutterPlugin: NSObject, FlutterPlugin {
 //                         completion: nil)
 //        }
     }
+    
+    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        print("AnuraMeasurementViewController dismissed")
+
+        // 🔥 Notify Flutter
+        flutterResult?(nil)
+        flutterResult = nil
+    }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
       measurementDelegate.setFlutterResult(result)
+      self.flutterResult = result
       if(call.method == "launchAnuraScanner"){
           do {
               // 1. Safely cast arguments
