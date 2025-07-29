@@ -133,7 +133,7 @@ class ChannelData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> json = {
-      "data": data.map((e) => e.toInt()).toList(), // Original JSON has ints
+      "dataList": data.map((e) => e.toInt()).toList(), // Original JSON has ints
     };
     if (notes != null) {
       json["notes"] = notes;
