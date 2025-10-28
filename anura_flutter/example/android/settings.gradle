@@ -10,6 +10,13 @@ pluginManagement {
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
+        maven {
+            url = uri("https://git.deepaffex.ai/api/packages/External/maven")// Use the actual URL of the Anura Maven repo
+            credentials {
+                username = System.getenv("DFX_GIT_USERNAME")
+                password = System.getenv("DFX_GIT_TOKEN")
+            }
+        }
         google()
         mavenCentral()
         gradlePluginPortal()
