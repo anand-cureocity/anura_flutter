@@ -50,3 +50,4 @@ build/
 # FVM Version Cache
 .fvm/
 anura_flutter/example/android/app/.cxx/
+anura_flutter/example/android/anura.properties
