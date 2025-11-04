@@ -1,5 +1,20 @@
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('anura.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+logger.info('Info: Additional insights.')
+
 allprojects {
     repositories {
+        maven {
+            url = uri("https://git.deepaffex.ai/api/packages/External/maven")// Use the actual URL of the Anura Maven repo
+            credentials {
+                username = keystoreProperties['DFX_GIT_USERNAME']
+                password = keystoreProperties['DFX_GIT_TOKEN']
+            }
+        }
         google()
         mavenCentral()
     }
@@ -8,8 +23,6 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 
