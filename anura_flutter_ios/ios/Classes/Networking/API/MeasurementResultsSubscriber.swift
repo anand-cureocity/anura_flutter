@@ -33,7 +33,7 @@ class MeasurementResultsSubscriber {
     var delegateQueue = DispatchQueue.main
     var lastChunkNumber : Int = 0
     
-    private let websocketClient : WebSocket
+    private let websocketClient : Starscream.WebSocket
     private var request : URLRequest
     private var requestID = 0
     private var isConnected = false
