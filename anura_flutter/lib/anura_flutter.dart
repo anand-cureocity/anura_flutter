@@ -7,6 +7,8 @@ AnuraFlutterPlatform get _platform => AnuraFlutterPlatform.instance;
 /// Returns the name of the current platform.
 Future<AnuraScannedData> launchAnuraScanner(AnuraUserModel userModel) async {
   final platformName = await _platform.launchAnuraScanner(userModel.toJson());
-  if (platformName == null) throw Exception('Unable to get Scanned results.');
-  return AnuraScannedData.fromJson(platformName);
+  if (platformName?.isEmpty ?? true) {
+    throw Exception('Unable to get Scanned results.');
+  }
+  return AnuraScannedData.fromJson(platformName!);
 }
